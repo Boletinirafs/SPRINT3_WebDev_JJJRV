@@ -1,6 +1,55 @@
 "use client";
 
+import { useState } from "react";
+
 export default function PrototypeSection() {
+  // qual apresentação está aberta: null (fechado), 0 (versão 1) ou 1 (versão 2)
+  const [presentAberta, setPresentAberta] = useState(null);
+
+  // qual imagem do array atual está sendo mostrada
+  const [imgIndex, setImgIndex] = useState(0);
+
+ const present1 = [
+  "/images/.presentation/p1/1-1.png",
+  "/images/.presentation/p1/1-2.png",
+  "/images/.presentation/p1/1-3.png",
+  "/images/.presentation/p1/1-4.png",
+  "/images/.presentation/p1/1-5.png",
+  "/images/.presentation/p1/1-6.png",
+  "/images/.presentation/p1/1-7.png",
+  "/images/.presentation/p1/1-8.png",
+  "/images/.presentation/p1/1-9.png",
+];
+
+const present2 = ["/images/.presentation/p2/p2.svg"];
+
+  // escolhe qual array usar, dependendo de qual apresentação está aberta
+  const imagensAtuais = presentAberta === 0 ? present1 : present2;
+
+  function abrirVersao1() {
+    setPresentAberta(0);
+    setImgIndex(0);
+  }
+
+  function abrirVersao2() {
+    setPresentAberta(1);
+    setImgIndex(0);
+  }
+
+  function fecharCarousel() {
+    setPresentAberta(null);
+  }
+
+  function proximaImagem() {
+    // resto da divisão: se chegar no fim do array, volta pro índice 0 sozinho
+    setImgIndex((imgIndex + 1) % imagensAtuais.length);
+  }
+
+  function imagemAnterior() {
+    // soma o tamanho antes do resto pra nunca dar número negativo
+    setImgIndex((imgIndex - 1 + imagensAtuais.length) % imagensAtuais.length);
+  }
+
   return (
     <section id="prototipo" className="secao">
       <h2 className="titulo2">Prototipos</h2>
@@ -13,7 +62,9 @@ export default function PrototypeSection() {
           <p>
             Versao inicial com interpretacao em tempo real do alfabeto em Libras.
           </p>
-          <button className="visualize1">Visualizar Slides para Banca 1</button>
+          <button className="visualize1" onClick={abrirVersao1}>
+            Visualizar Slides para Banca 1
+          </button>
         </div>
 
         <div className="version">
@@ -22,7 +73,18 @@ export default function PrototypeSection() {
             Versao atual que interpreta sinais de Libras gerais, utilizando
             movimentos manuais e faciais.
           </p>
-          <button className="visualize2">Visualizar Slides para Banca 2</button>
+          <button className="visualize2" onClick={abrirVersao2}>
+            Visualizar Slides para Banca 2
+          </button>
+        </div>
+      </div>
+
+      <div className={`carousel ${presentAberta === null ? "hide" : ""}`}>
+        <img src={imagensAtuais[imgIndex]} alt="Slide da apresentação" />
+        <div className="botoes">
+          <button onClick={imagemAnterior}>Anterior</button>
+          <button onClick={proximaImagem}>Próxima</button>
+          <button onClick={fecharCarousel}>Fechar</button>
         </div>
       </div>
     </section>
